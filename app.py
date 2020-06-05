@@ -37,7 +37,7 @@ def get_books():
     retrieve = books_schema.dump(books)
     return jsonify(retrieve.data)
 
-# update a book
+# update book
 @app.route("/book/<id>", methods=["PUT"])
 def update_book(id):
     book = hdb.Library.query.get(id)
@@ -57,6 +57,15 @@ def update_book(id):
 
     db.session.commit()
     return book_schema.jsonify(book)
+
+# delete book
+@app.route("/book/<id>", methods=["DELETE"])
+def delete_book(id):
+    book = hdb.Library.query.get()
+    db.session.delete(book)
+    db.session.commit()
+    return book_schema.jsonify(book)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
