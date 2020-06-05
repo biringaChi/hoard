@@ -1,20 +1,9 @@
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 import os
 import hoard_db as hdb
 
-
-# from app import db
-# db.create_all()
-
-# Init app
 app = Flask(__name__)
-mash_mellow = Marshmallow(app)
-
 database_root = os.path.abspath(os.path.dirname(__file__))
-
-# Database
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(database_root, "hoard.sqlite")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
@@ -47,6 +36,27 @@ def get_books():
     books = hdb.Library.query.all()
     retrieve = books_schema.dump(books)
     return jsonify(retrieve.data)
+
+# update a book
+@app.route("/book/<id>", methods=["PUT"])
+def update_book(id):
+    book = hdb.Library.query.get(id)
+    title = request.json["title"]
+    author = request.json["author"]
+    year = request.json["year"]
+    month = request.json["month"]
+    release_year = request.json["release_year"]
+    rating_tag = request.json["rating_tag"]
+
+    book.title = title
+    book.author = author
+    book.year = year
+    book.month = month
+    book.release_year = release_year
+    book.rating_tag = rating_tag
+
+    db.session.commit()
+    return book_schema.jsonify(book)
 
 if __name__ == '__main__':
     app.run(debug=True)
