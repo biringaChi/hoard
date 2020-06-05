@@ -1,7 +1,5 @@
-
 from sqlite3 import connect
 from contextlib import contextmanager
-
 
 class HoardDatabase:
     def __init__(self, books_database):
